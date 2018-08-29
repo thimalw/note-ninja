@@ -1,0 +1,34 @@
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+const bcrypt = require('bcrypt');
+
+const UserSchema = new Schema({
+  email: {
+    type: String,
+    required: true,
+    trim: true,
+    unique: true
+  },
+  password: {
+    type: String,
+    required: true
+  },
+  firstName: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  lastName: {
+    type: String,
+    required: false,
+    default: null,
+    trim: true
+  }
+}, { timestamps: true });
+
+UserSchema.pre('save', function(next) {
+  this.password = bcrypt.hashSync(this.password, 10);
+  next();
+});
+
+module.exports = mongoose.model('User', UserSchema);
