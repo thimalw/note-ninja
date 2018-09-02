@@ -15,7 +15,7 @@ const create = async (user) => {
   });
 
   if (validatedUser.error !== null) {
-    return makeRes(400, 'Unable to register new user.', validatedUser.error.details);
+    return makeRes(400, 'Unable to register new user.', { errors: validatedUser.error.details });
   }
   
   // save user to database
