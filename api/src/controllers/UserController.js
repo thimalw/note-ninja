@@ -1,13 +1,26 @@
-// const mongoose = require('mongoose');
-const User = require('../models/User');
-const logger = require('../services/winston');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const Joi = require('joi');
+
+const User = require('../models/User');
+const logger = require('../services/winston');
+const validUser = require('../services/validation').validUser;
 const { makeRes, to } = require('../helpers');
 
 const create = async (user) => {
+  // validate input
+  const validatedUser = Joi.validate(user, validUser, {
+    allowUnknown: false,
+    abortEarly: false
+  });
+
+  if (validatedUser.error !== null) {
+    return makeRes(400, 'Unable to register new user.', validatedUser.error.details);
+  }
+  
+  // save user to database
   let err, savedUser;
-  const userInstance = new User(user);
+  const userInstance = new User(validatedUser.value);
   [err, savedUser] = await to(userInstance.save());
 
   if (err) {
