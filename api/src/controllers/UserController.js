@@ -54,21 +54,21 @@ const read = async (id) => {
 };
 
 const authenticate = async ({email, password}) => {
-  let err, user;
-  [err, user] = await to(User.findOne({email}));
+  let err, userInfo;
+  [err, userInfo] = await to(User.findOne({email}));
 
   if (err) {
     logger.error(err);
     return makeRes(err.status, 'Unable to authenticate.');
   }
 
-  if (user && bcrypt.compareSync(password, user.password)) {
+  if (userInfo && bcrypt.compareSync(password, userInfo.password)) {
     const secret = 'SECRET_KEY'; // TODO
     const opts = {
       expiresIn: 120
     };
 
-    const token = jwt.sign({ id: user._id }, secret, opts);
+    const token = jwt.sign({ id: userInfo._id }, secret, opts);
 
     return makeRes(200, 'Authentication successful.', { token });
   }

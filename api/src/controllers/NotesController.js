@@ -1,9 +1,10 @@
-const mongoose = require('mongoose');
 const Note = require('../models/Note');
 const logger = require('../services/winston');
 const { makeRes, to } = require('../helpers');
 
-const create = async (note) => {
+const create = async (user_id, note) => {
+  note.user = user_id;
+
   let err, savedNote;
   const noteInstance = new Note(note);
   [err, savedNote] = await to(noteInstance.save());
