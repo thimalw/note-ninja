@@ -55,7 +55,7 @@ const read = async (id) => {
 
 const authenticate = async ({email, password}) => {
   let err, userInfo;
-  [err, userInfo] = await to(User.findOne({email}));
+  [err, userInfo] = await to(User.findOne({ email }));
 
   if (err) {
     logger.error(err);
