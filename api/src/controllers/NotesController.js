@@ -2,8 +2,8 @@ const Note = require('../models/Note');
 const logger = require('../services/winston');
 const { makeRes, to } = require('../helpers');
 
-const create = async (user_id, note) => {
-  note.user = user_id;
+const create = async (user, note) => {
+  note.user = user;
 
   let err, savedNote;
   const noteInstance = new Note(note);
@@ -17,6 +17,23 @@ const create = async (user_id, note) => {
   return makeRes(200, 'Note saved.', savedNote);
 };
 
+const list = async (user) => {
+  let err, notes;
+  [err, notes] = await to(Note.find({ user }, '_id title createdAt'));
+
+  if (err) {
+    logger.error(err);
+    return makeRes(err.status, 'Unable to retrieve notes');
+  }
+
+  if (notes) {
+    return makeRes(200, 'Notes retrieved', { notes });
+  }
+
+  return makeRes(404, 'No notes found');
+};
+
 module.exports = {
-  create
+  create,
+  list
 };
