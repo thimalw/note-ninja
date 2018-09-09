@@ -16,7 +16,12 @@ router.get('/', passport.authenticate('jwt', { session: false }), async (req, re
 });
 
 router.get('/:id', passport.authenticate('jwt', { session: false }), async (req, res) => {
-  const note = await NotesController.read(req.user._id, req.params.id);
+  const note = await NotesController.read(req.params.id, req.user._id);
+  res.status(note.status).send(note);
+});
+
+router.put('/:id', passport.authenticate('jwt', { session: false }), async (req, res) => {
+  const note = await NotesController.update(req.params.id, req.user._id, req.body);
   res.status(note.status).send(note);
 });
 

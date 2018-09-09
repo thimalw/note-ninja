@@ -33,9 +33,9 @@ const list = async (user) => {
   return makeRes(404, 'No notes found');
 };
 
-const read = async (user, _id) => {
+const read = async (id, user) => {
   let err, note;
-  [err, note] = await to(Note.findOne({ user, _id }));
+  [err, note] = await to(Note.findOne({ _id: id, user }));
 
   if (err) {
     logger.error(err);
@@ -49,8 +49,25 @@ const read = async (user, _id) => {
   return makeRes(404, 'Note not found');
 };
 
+const update = async (id, user, note) => {
+  let err, savedNote;
+  [err, savedNote] = await to(Note.findOneAndUpdate({ _id: id, user }, note, { new: true }));
+
+  if (err) {
+    logger.error(err);
+    return makeRes(err.status, 'Unable to update note');
+  }
+
+  if (savedNote) {
+    return makeRes(200, 'Note updated', { note: savedNote });
+  }
+
+  return makeRes(404, 'Note not found');
+};
+
 module.exports = {
   create,
   list,
-  read
+  read,
+  update
 };

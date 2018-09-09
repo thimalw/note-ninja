@@ -7,8 +7,7 @@ const makeRes = (status, message = null, data = null) => {
 const to = (promise) => {
   return promise.then(data => {
     return [null, data];
-  })
-  .catch(err => [err]);
+  }, (err => [err]));
 };
 
 module.exports = {
