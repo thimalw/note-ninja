@@ -33,7 +33,24 @@ const list = async (user) => {
   return makeRes(404, 'No notes found');
 };
 
+const read = async (user, _id) => {
+  let err, note;
+  [err, note] = await to(Note.findOne({ user, _id }));
+
+  if (err) {
+    logger.error(err);
+    return makeRes(err.status, 'Unable to retrieve note');
+  }
+
+  if (note) {
+    return makeRes(200, 'Note retrieved', { note });
+  }
+
+  return makeRes(404, 'Note not found');
+};
+
 module.exports = {
   create,
-  list
+  list,
+  read
 };

@@ -15,4 +15,9 @@ router.get('/', passport.authenticate('jwt', { session: false }), async (req, re
   res.status(notes.status).send(notes);
 });
 
+router.get('/:id', passport.authenticate('jwt', { session: false }), async (req, res) => {
+  const note = await NotesController.read(req.user._id, req.params.id);
+  res.status(note.status).send(note);
+});
+
 module.exports = router;
