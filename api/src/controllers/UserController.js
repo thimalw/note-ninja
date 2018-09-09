@@ -29,27 +29,46 @@ const create = async (user) => {
   }
 
   return makeRes(200, 'User registered.', {
-    _id: savedUser._id,
-    email: savedUser.email
+    user: {
+      _id: savedUser._id,
+      email: savedUser.email
+    }
   });
 };
 
+const read = async (id) => {
+  let err, user;
+  [err, user] = await to(User.findById(id));
+
+  if (err) {
+    logger.error(err);
+    return makeRes(err.status, 'Unable to retrieve user');
+  }
+
+  if (user) {
+    user.password = undefined;
+    return makeRes(200, 'User retrieved', { user });
+  }
+
+  return makeRes(404, 'User not found');
+};
+
 const authenticate = async ({email, password}) => {
-  let err, userInfo;
-  [err, userInfo] = await to(User.findOne({email}));
+  let err, user;
+  [err, user] = await to(User.findOne({email}));
 
   if (err) {
     logger.error(err);
     return makeRes(err.status, 'Unable to authenticate.');
   }
 
-  if (userInfo && bcrypt.compareSync(password, userInfo.password)) {
+  if (user && bcrypt.compareSync(password, user.password)) {
     const secret = 'SECRET_KEY'; // TODO
     const opts = {
       expiresIn: 120
     };
 
-    const token = jwt.sign({ id: userInfo._id }, secret, opts);
+    const token = jwt.sign({ id: user._id }, secret, opts);
 
     return makeRes(200, 'Authentication successful.', { token });
   }
@@ -59,5 +78,6 @@ const authenticate = async ({email, password}) => {
 
 module.exports = {
   create,
+  read,
   authenticate
 };
