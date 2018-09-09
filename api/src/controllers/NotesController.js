@@ -65,9 +65,26 @@ const update = async (id, user, note) => {
   return makeRes(404, 'Note not found');
 };
 
+const remove = async (id, user) => {
+  let err, data;
+  [err, data] = await to(Note.deleteOne({ _id: id, user }));
+
+  if (err) {
+    logger.error(err);
+    return makeRes(err.status, 'Unable to delete note');
+  }
+
+  if (data.n > 0) {
+    return makeRes(200, 'Note deleted');
+  }
+
+  return makeRes(404, 'Note not found');
+};
+
 module.exports = {
   create,
   list,
   read,
-  update
+  update,
+  remove
 };

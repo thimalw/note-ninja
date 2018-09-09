@@ -25,4 +25,9 @@ router.put('/:id', passport.authenticate('jwt', { session: false }), async (req,
   res.status(note.status).send(note);
 });
 
+router.delete('/:id', passport.authenticate('jwt', { session: false }), async (req, res) => {
+  const note = await NotesController.remove(req.params.id, req.user._id);
+  res.status(note.status).send(note);
+});
+
 module.exports = router;
