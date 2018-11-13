@@ -9,6 +9,17 @@ const validUser = Joi.object().keys({
     .min(8)
     .required()
     .label("Password"),
+  passwordConfirm: Joi.string()
+    .valid(Joi.ref('password'))
+    .options({
+      language: {
+        any: {
+          allowOnly: 'doesn\'t match',
+        }
+      }
+    })
+    .required()
+    .label('Password confirmation'),
   name: Joi.string()
     .max(50)
     .required()
