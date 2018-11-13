@@ -65,7 +65,7 @@ const authenticate = async ({email, password}) => {
   if (userInfo && bcrypt.compareSync(password, userInfo.password)) {
     const secret = 'SECRET_KEY'; // TODO
     const opts = {
-      expiresIn: 120
+      expiresIn: 86400 // 24 hours
     };
 
     const token = jwt.sign({ id: userInfo._id }, secret, opts);

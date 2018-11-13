@@ -7,16 +7,12 @@ const validUser = Joi.object().keys({
     .label("Email"),
   password: Joi.string()
     .min(8)
-    .label("Password"),
-  firstName: Joi.string()
-    .alphanum()
-    .max(30)
     .required()
-    .label("First name"),
-  lastName: Joi.string()
-    .alphanum()
-    .max(30)
-    .label("Last name")
+    .label("Password"),
+  name: Joi.string()
+    .max(50)
+    .required()
+    .label("Name")
 });
 
 module.exports = {

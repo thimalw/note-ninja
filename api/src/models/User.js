@@ -13,15 +13,9 @@ const UserSchema = new Schema({
     type: String,
     required: true
   },
-  firstName: {
+  name: {
     type: String,
     required: true,
-    trim: true
-  },
-  lastName: {
-    type: String,
-    required: false,
-    default: null,
     trim: true
   }
 }, { timestamps: true });
