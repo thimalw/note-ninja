@@ -3,7 +3,7 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import Auth from './Auth';
 import AuthContext, { AuthConsumer } from '../../contexts/AuthContext';
-import { Redirect } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 
 class Login extends Component {
   constructor(props) {
@@ -83,7 +83,7 @@ class Login extends Component {
                     </div>
                     <div className="auth-form-btn">
                       <button type="submit" className="btn btn-white" disabled={isSubmitting}>Log In</button>
-                      <button className="btn btn-white-secondary">Sign Up</button>
+                      <Link to="/signup" className="btn btn-white-secondary">Sign Up</Link>
                     </div>
                   </Form>
                 )}

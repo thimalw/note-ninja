@@ -1,14 +1,18 @@
 import axios from 'axios';
-
-const baseUrl = 'http://localhost:3000/api/v1';
+import './apiConfig';
 
 const login = async (email, password) => {
-  return await axios.post(`${baseUrl}/user/login`, {
+  return await axios.post('/user/login', {
     email,
     password
   });
 };
 
+const signup = async (user) => {
+  return await axios.post('/user', user);
+};
+
 export default {
-  login
+  login,
+  signup
 };
