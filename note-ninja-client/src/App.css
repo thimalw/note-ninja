@@ -1,3 +1,12 @@
+/* App layout */
+.app-outer {
+  padding-top: 50px;
+  width: 100%;
+  min-height: 100vh;
+  top: 0;
+  left: 0;
+}
+
 /* Buttons */
 .btn {
   display: inline-block;
@@ -5,6 +14,7 @@
   border-style: solid;
   background-color: transparent;
   text-decoration: none !important;
+  text-transform: uppercase;
   border-radius: 6px;
   font-size: 14px;
   line-height: 1;
@@ -19,13 +29,70 @@
 .btn:active {
   box-shadow: 0 10px 12px -8px rgba(0,0,0,0.12);
 }
+.btn-primary {
+  color: #00b3fb;
+  border-color: #00b3fb;
+}
+.btn-primary:hover,
+.btn-primary:active {
+  color: #fff;
+  background-color: #00b3fb;
+}
+.btn-primary:disabled,
+.btn-primary[disabled],
+.btn-primary:disabled:hover,
+.btn-primary[disabled]:hover {
+  color: rgba(0, 179, 251, 0.5);
+  border-color: rgba(0, 179, 251, 0.5);
+  cursor: not-allowed;
+  background-color: transparent;
+  box-shadow: 0 0 12px 0px rgba(0,0,0,0);
+}
+.btn-secondary {
+  color: #888888;
+  border-color: #888888;
+}
+.btn-secondary:hover,
+.btn-secondary:active {
+  color: #fff;
+  background-color: #888888;
+}
+.btn-secondary:disabled,
+.btn-secondary[disabled],
+.btn-secondary:disabled:hover,
+.btn-secondary[disabled]:hover {
+  color: rgba(136, 136, 136, 0.5);
+  border-color: rgba(136, 136, 136, 0.5);
+  cursor: not-allowed;
+  background-color: transparent;
+  box-shadow: 0 0 12px 0px rgba(0,0,0,0);
+}
+.btn-danger {
+  color: #e01a35;
+  border-color: #e01a35;
+}
+.btn-danger:hover,
+.btn-danger:active {
+  color: #fff;
+  background-color: #e01a35;
+}
+.btn-danger:disabled,
+.btn-danger[disabled],
+.btn-danger:disabled:hover,
+.btn-danger[disabled]:hover {
+  color: rgba(224, 26, 53, 0.5);
+  border-color: rgba(224, 26, 53, 0.5);
+  cursor: not-allowed;
+  background-color: transparent;
+  box-shadow: 0 0 12px 0px rgba(0,0,0,0);
+}
 .btn-white {
   color: #fff;
   border-color: #fff;
 }
 .btn-white:hover,
 .btn-white:active {
-  color: #00A7FF;
+  color: #00b3fb;
   background-color: #fff;
 }
 .btn-white-secondary {
@@ -34,7 +101,7 @@
 }
 .btn-white-secondary:hover,
 .btn-white-secondary:active {
-  color: #00A7FF;
+  color: #00b3fb;
   background-color: rgba(255, 255, 255, 1);
 }
 .btn-white:disabled,
