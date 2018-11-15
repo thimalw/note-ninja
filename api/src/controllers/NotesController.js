@@ -26,11 +26,11 @@ const list = async (user) => {
     return makeRes(err.status, 'Unable to retrieve notes');
   }
 
-  if (notes) {
-    return makeRes(200, 'Notes retrieved', { notes });
+  if (!notes) {
+    notes = [];
   }
 
-  return makeRes(404, 'No notes found');
+  return makeRes(200, 'Notes retrieved', { notes });
 };
 
 const read = async (id, user) => {
