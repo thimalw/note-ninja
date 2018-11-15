@@ -1,0 +1,38 @@
+.notes-list-item,
+.notes-list-item:visited,
+.notes-list-item:hover,
+.notes-list-item:active {
+  display: inline-block;
+  border: 1px solid #DBDBDB;
+  padding: 20px;
+  margin: 10px;
+  border-radius: 15px;
+  width: 260px;
+  height: 180px;
+  overflow: hidden;
+  position: relative;
+  color: #222;
+  text-decoration: none;
+  outline: none !important;
+  transition: all 200ms linear;
+}
+.notes-list-item:hover,
+.notes-list-item:active {
+  border-color: #00b3fb;
+  transition: all 100ms linear;
+  color: #00b3fb;
+}
+.notes-list-item .note-title {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+  font-size: 18px;
+  color: #555;
+  margin-bottom: 20px;
+  transition: all 200ms linear;
+}
+.notes-list-item:hover .note-title,
+.notes-list-item:active .note-title {
+  color: #00b3fb;
+  transition: all 100ms linear;
+}

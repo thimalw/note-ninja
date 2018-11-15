@@ -1,0 +1,21 @@
+.titlebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: block;
+  border-bottom: 1px solid #eee;
+  background-color: #fff;
+}
+.titlebar-inner {
+  height: 50px;
+  padding: 5px 20px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  position: relative;
+}
+.titlebar-right {
+  margin-left: auto;
+  margin-right: 0;
+}
