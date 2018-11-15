@@ -14,7 +14,7 @@ const create = async (user, note) => {
     return makeRes(err.status || 500, 'Unable to save note.');
   }
 
-  return makeRes(200, 'Note saved.', savedNote);
+  return makeRes(200, 'Note saved.', { note: savedNote });
 };
 
 const list = async (user) => {
