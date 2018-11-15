@@ -4,6 +4,7 @@ import ProtectedRoute from './ProtectedRoute';
 import Login from './components/Auth/Login';
 import Signup from './components/Auth/Signup';
 import Notes from './components/Notes';
+import './IconLibrary';
 import './App.css';
 
 class App extends Component {

@@ -7,7 +7,7 @@ class Notes extends Component {
   render() {
     return (
       <Switch>
-        <Route path="/notes/:id" component={Note} />
+        <Route path="/notes/:id" render={props => <Note key={props.match.params.id} {...props} />} />
         <Route exact path="/" component={NotesList} />
       </Switch>
     );

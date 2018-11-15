@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import Auth from './Auth';
@@ -82,8 +83,14 @@ class Login extends Component {
                       <ErrorMessage name="password" component="span" className="auth-form-error" />
                     </div>
                     <div className="auth-form-btn">
-                      <button type="submit" className="btn btn-white" disabled={isSubmitting}>Log In</button>
-                      <Link to="/signup" className="btn btn-white-secondary">Sign Up</Link>
+                      <button type="submit" className="btn btn-white btn-icon-left" disabled={isSubmitting}>
+                        <FontAwesomeIcon icon="sign-in-alt" />
+                        Log In
+                      </button>
+                      <Link to="/signup" className="btn btn-white-secondary btn-icon-left">
+                        <FontAwesomeIcon icon="user-plus" />
+                        Sign Up
+                      </Link>
                     </div>
                   </Form>
                 )}

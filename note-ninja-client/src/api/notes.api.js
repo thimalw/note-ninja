@@ -10,6 +10,10 @@ instance.interceptors.request.use(
   error => Promise.reject(error)
 );
 
+const add = async (note) => {
+  return await instance.post('/notes', note);
+};
+
 const get = async (id) => {
   return await instance.get(`/notes/${id}`);
 };
@@ -25,8 +29,14 @@ const update = async (id, title, body) => {
   });
 };
 
+const remove = async (id) => {
+  return await instance.delete(`/notes/${id}`);
+};
+
 export default {
+  add,
   get,
   list,
-  update
+  update,
+  remove
 };

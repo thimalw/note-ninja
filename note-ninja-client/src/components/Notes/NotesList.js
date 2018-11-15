@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Titlebar from '../Titlebar';
 import NotesAPI from '../../api/notes.api';
 import NotesListItem from './NotesListItem';
+import AuthContext from '../../contexts/AuthContext';
 import './NotesList.css';
 
 class NotesList extends Component {
@@ -19,6 +20,10 @@ class NotesList extends Component {
         notes: res.data.data.notes
       });
     } catch (err) {
+      if (typeof (err.response.status) !== 'undefined'
+        && err.response.status === 401) {
+        this.context.logout();
+      }
       console.log(err.response);
     }
   }
@@ -40,5 +45,7 @@ class NotesList extends Component {
     );
   }
 }
+
+NotesList.contextType = AuthContext;
 
 export default NotesList;

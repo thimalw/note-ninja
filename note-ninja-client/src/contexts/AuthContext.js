@@ -11,8 +11,15 @@ class AuthProvider extends Component {
     const isLoggedIn = localStorage.getItem('jwtToken') === null ? false : true;
 
     this.state = {
-      isLoggedIn: isLoggedIn
+      isLoggedIn
     };
+  }
+
+  componentDidMount() {
+    const isLoggedIn = localStorage.getItem('jwtToken') === null ? false : true;
+    this.setState({
+      isLoggedIn
+    });
   }
 
   login = async (email, password) => {
