@@ -79,6 +79,7 @@
 
 .note-editor .note-title-outer {
   padding-top: 50px;
+  padding-bottom: 30px;
 }
 .note-editor .note-title {
   display: block;
