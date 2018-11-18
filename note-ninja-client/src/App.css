@@ -136,3 +136,22 @@
   background-color: transparent;
   box-shadow: 0 0 12px 0px rgba(0,0,0,0);
 }
+.btn-link {
+  color: #00b3fb;
+  padding: 0;
+  border: 0;
+  font-size: inherit;
+  margin: 0;
+  display: inline;
+}
+.btn-link:hover,
+.btn-link:active {
+  color: #00b3fb;
+}
+.btn-link:disabled,
+.btn-link[disabled],
+.btn-link:disabled:hover,
+.btn-link[disabled]:hover {
+  color: rgba(0, 179, 251, 0.5);
+  cursor: not-allowed;
+}

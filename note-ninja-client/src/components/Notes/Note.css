@@ -6,6 +6,15 @@
   min-height: calc(100vh - 102px);
 }
 
+.save-indicator {
+  display: inline-block;
+  margin: 0 5px;
+  line-height: 1;
+  font-size: 14px;
+  color: #888;
+  text-transform: uppercase;
+}
+
 .note-editor .note-toolbar {
   position: fixed;
   display: block;
