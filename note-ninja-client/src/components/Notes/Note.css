@@ -77,6 +77,21 @@
   margin: 2px 4px;
 }
 
+.note-editor .note-editor-wrap {
+  padding-bottom: 165px;
+  line-height: 1.7;
+  font-size: 18px;
+  height: inherit;
+  min-height: calc(100vh - 297px);
+  position: relative;
+  cursor: text;
+}
+.note-editor .public-DraftEditorPlaceholder-root {
+  pointer-events: none;
+}
+.note-editor .note-editor-wrap.hide-placeholder .public-DraftEditorPlaceholder-root {
+  display: none;
+}
 .note-editor .note-title-outer {
   padding-top: 50px;
   padding-bottom: 30px;
@@ -91,15 +106,4 @@
   outline: none !important;
   flex: 0;
   padding-bottom: 20px;
-}
-.note-editor .DraftEditor-root {
-  padding-bottom: 165px;
-  line-height: 1.7;
-  font-size: 18px;
-  height: inherit;
-  /* height: calc(100vh - 297px); */
-  position: relative;
-}
-.note-editor .DraftEditor-root > div > div {
-  min-height: calc(100vh - 397px);
 }

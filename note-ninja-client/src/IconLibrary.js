@@ -4,7 +4,8 @@ import {
   faItalic, faUnderline, faAlignLeft,
   faAlignCenter, faAlignRight, faAlignJustify,
   faPlus, faSignOutAlt, faChevronLeft,
-  faTrashAlt, faSignInAlt, faUserPlus
+  faTrashAlt, faSignInAlt, faUserPlus,
+  faListUl, faListOl
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(
@@ -12,5 +13,6 @@ library.add(
   faItalic, faUnderline, faAlignLeft,
   faAlignCenter, faAlignRight, faAlignJustify,
   faPlus, faSignOutAlt, faChevronLeft,
-  faTrashAlt, faSignInAlt, faUserPlus
+  faTrashAlt, faSignInAlt, faUserPlus,
+  faListUl, faListOl
 );

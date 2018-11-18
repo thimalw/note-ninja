@@ -23,6 +23,8 @@ class Note extends Component {
       editorState: EditorState.createEmpty()
     };
 
+    this.focus = () => this.refs.editor.focus();
+
     this.onChange = (editorState) => {
       const contentState = editorState.getCurrentContent();
       this.handleContentChange(contentState);
@@ -69,17 +71,31 @@ class Note extends Component {
     const newState = RichUtils.handleKeyCommand(editorState, command);
     if (newState) {
       this.onChange(newState);
-      return 'handled';
+      return true;
     } else {
-      return 'not-handled';
+      return false;
     }
   };
 
-  handleBlockStyle = (e) => {
+  onTab = (e) => {
+    e.preventDefault();
+    const newEditorState = RichUtils.onTab(
+      e,
+      this.state.editorState,
+      4, /* maxDepth */
+    );
+    if (newEditorState !== this.state.editorState) {
+      this.onChange(newEditorState);
+    }
+  };
+
+  handleBlockStyle = e => {
+    e.preventDefault();
     this.onChange(RichUtils.toggleBlockType(this.state.editorState, e.target.value));
   };
 
-  handleInlineStyle = (e) => {
+  handleInlineStyle = e => {
+    e.preventDefault();
     this.onChange(RichUtils.toggleInlineStyle(this.state.editorState, e.target.value));
   };
 
@@ -99,7 +115,7 @@ class Note extends Component {
     });
   };
 
-  handleTitleChange = (e) => {
+  handleTitleChange = e => {
     const title = e.target.value;
     this.setState(state => ({
       note: {
@@ -173,6 +189,14 @@ class Note extends Component {
   };
   
   render() {
+    let className = 'note-editor-wrap';
+    var contentState = this.state.editorState.getCurrentContent();
+    if (!contentState.hasText()) {
+      if (contentState.getBlockMap().first().getType() !== 'unstyled') {
+        className += ' hide-placeholder';
+      }
+    }
+    
     return (
       <div className="app-outer">
         <Titlebar>
@@ -196,7 +220,7 @@ class Note extends Component {
         <main className="app-main">
           <div className="note-editor">
             <div className="container container-text note-editor-inner">
-              <div className="note-title-outer">
+              <div className="note-title-outer RichEditor-root">
                 <input
                   className="note-title"
                   type="text"
@@ -206,13 +230,21 @@ class Note extends Component {
                   onChange={this.handleTitleChange}
                 />
               </div>
-              <Editor
-                className="note-body"
-                placeholder="Type here..."
-                editorState={this.state.editorState}
-                handleKeyCommand={this.handleKeyCommand}
-                onChange={this.onChange}
-              />
+              <div
+                className={className}
+                onClick={this.focus}
+              >
+                <Editor
+                  className="note-body"
+                  placeholder="Type here..."
+                  editorState={this.state.editorState}
+                  handleKeyCommand={this.handleKeyCommand}
+                  onTab={this.onTab}
+                  onChange={this.onChange}
+                  ref="editor"
+                  spellCheck={true}
+                />
+              </div>
             </div>
             <div className="note-toolbar">
               <div className="container container-text note-toolbar-inner">
@@ -220,33 +252,46 @@ class Note extends Component {
                   <button
                     className="btn toolbar-command"
                     value="header-two"
-                    onClick={this.handleBlockStyle}>
+                    onMouseDown={this.handleBlockStyle}>
                     <FontAwesomeIcon icon="heading" />
                   </button>
                   <button
                     className="btn toolbar-command"
                     value="paragraph"
-                    onClick={this.handleBlockStyle}>
+                    onMouseDown={this.handleBlockStyle}>
                     <FontAwesomeIcon icon="paragraph" />
                   </button>
                   <div className="toolbar-sep"></div>
                   <button
                     className="btn toolbar-command"
                     value="BOLD"
-                    onClick={this.handleInlineStyle}>
+                    onMouseDown={this.handleInlineStyle}>
                     <FontAwesomeIcon icon="bold" />
                   </button>
                   <button
                     className="btn toolbar-command"
                     value="ITALIC"
-                    onClick={this.handleInlineStyle}>
+                    onMouseDown={this.handleInlineStyle}>
                     <FontAwesomeIcon icon="italic" />
                   </button>
                   <button
                     className="btn toolbar-command"
                     value="UNDERLINE"
-                    onClick={this.handleInlineStyle}>
+                    onMouseDown={this.handleInlineStyle}>
                     <FontAwesomeIcon icon="underline" />
+                  </button>
+                  <div className="toolbar-sep"></div>
+                  <button
+                    className="btn toolbar-command"
+                    value="unordered-list-item"
+                    onMouseDown={this.handleBlockStyle}>
+                    <FontAwesomeIcon icon="list-ul" />
+                  </button>
+                  <button
+                    className="btn toolbar-command"
+                    value="ordered-list-item"
+                    onMouseDown={this.handleBlockStyle}>
+                    <FontAwesomeIcon icon="list-ol" />
                   </button>
                 </div>
               </div>
