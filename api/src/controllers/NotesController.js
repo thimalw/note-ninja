@@ -1,12 +1,28 @@
+const Joi = require('joi');
+
 const Note = require('../models/Note');
+const validNote = require('../services/validation').validNote;
 const logger = require('../services/winston');
 const { makeRes, to } = require('../helpers');
 
 const create = async (user, note) => {
   note.user = user;
 
+  if (typeof (note.excerpt) != 'undefined') {
+    note.excerpt = note.excerpt.substring(0, 100);
+  }
+
+  const validatedNote = Joi.validate(note, validNote, {
+    allowUnknown: false,
+    abortEarly: false
+  });
+
+  if (validatedNote.error !== null) {
+    return makeRes(400, 'Unable to save note.', { errors: validatedNote.error.details });
+  }
+  
   let err, savedNote;
-  const noteInstance = new Note(note);
+  const noteInstance = new Note(validatedNote.value);
   [err, savedNote] = await to(noteInstance.save());
   
   if (err) {
@@ -19,7 +35,7 @@ const create = async (user, note) => {
 
 const list = async (user) => {
   let err, notes;
-  [err, notes] = await to(Note.find({ user }, '_id title createdAt'));
+  [err, notes] = await to(Note.find({ user }, '_id title excerpt createdAt'));
 
   if (err) {
     logger.error(err);
@@ -50,12 +66,29 @@ const read = async (id, user) => {
 };
 
 const update = async (id, user, note) => {
+  delete note._id;
+  note.user = user;
+
+  if (typeof(note.excerpt) != 'undefined') {
+    note.excerpt = note.excerpt.substring(0, 100);
+  }
+
+  const validatedNote = Joi.validate(note, validNote, {
+    allowUnknown: false,
+    abortEarly: false
+  });
+
+  if (validatedNote.error !== null) {
+    return makeRes(400, 'Unable to update note.', { errors: validatedNote.error.details });
+  }
+  
   let err, savedNote;
-  [err, savedNote] = await to(Note.findOneAndUpdate({ _id: id, user }, note, { new: true }));
+  const noteInstance = validatedNote.value;
+  [err, savedNote] = await to(Note.findOneAndUpdate({ _id: id, user }, noteInstance, { new: true }));
 
   if (err) {
     logger.error(err);
-    return makeRes(err.status, 'Unable to update note');
+    return makeRes(400, 'Unable to update note', err);
   }
 
   if (savedNote) {

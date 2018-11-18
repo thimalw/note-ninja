@@ -14,6 +14,10 @@ const NoteSchema = new Schema({
   body: {
     type: String,
     default: ''
+  },
+  excerpt: {
+    type: String,
+    default: ''
   }
 }, { timestamps: true });
 

@@ -36,3 +36,11 @@
   color: #00b3fb;
   transition: all 100ms linear;
 }
+.notes-list-item .note-body {
+  display: block;
+  margin: 0;
+  font-family: inherit;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  font-size: 14px;
+}

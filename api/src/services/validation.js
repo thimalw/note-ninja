@@ -26,6 +26,27 @@ const validUser = Joi.object().keys({
     .label("Name")
 });
 
+const validNote = Joi.object().keys({
+  user: Joi.any()
+    .required()
+    .label("User ID"),
+  title: Joi.string()
+    .allow('')
+    .max(400)
+    .label("Title"),
+  body: Joi.string()
+    .allow('')
+    .label("Body text"),
+  excerpt: Joi.string()
+    .allow('')
+    .max(100)
+    .label("Excerpt"),
+  createdAt: Joi.any(),
+  updatedAt: Joi.any(),
+  __v: Joi.any()
+});
+
 module.exports = {
-  validUser
+  validUser,
+  validNote
 };

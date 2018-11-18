@@ -16,7 +16,8 @@ class Note extends Component {
       note: {
         _id: this.props.match.params.id,
         title: '',
-        body: ''
+        body: '',
+        excerpt: ''
       },
       saved: 1,
       editorState: EditorState.createEmpty()
@@ -30,19 +31,22 @@ class Note extends Component {
   }
 
   async componentDidMount() {
-    this.timer = setInterval(() => this.updateRemote(), 2500);
+    this.timer = setInterval(() => this.updateRemote(), 3000);
     this.mounted = true;
     
     try {
       const res = await NotesAPI.get(this.props.match.params.id);
       const note = res.data.data.note;
 
+      this.setState({
+        note
+      });
+
       if (note.body !== '') {
         var editorState = null;
         const contentState = convertFromRaw(JSON.parse(note.body));
         editorState = EditorState.createWithContent(contentState);
         this.setState({
-          note,
           editorState
         });
       }
@@ -80,11 +84,14 @@ class Note extends Component {
   };
 
   handleContentChange = (contentState) => {
+    const plainText = contentState.getPlainText();
+    const excerpt = plainText.length > 100 ? plainText.substring(0, 97).trim() + "..." : plainText;
     const contentStateRaw = convertToRaw(contentState);
     this.setState(state => ({
       note: {
         ...state.note,
-        body: JSON.stringify(contentStateRaw)
+        body: JSON.stringify(contentStateRaw),
+        excerpt
       },
       saved: 0
     }), () => {
@@ -113,8 +120,7 @@ class Note extends Component {
         try {
           const res = await NotesAPI.update(
             this.state.note._id,
-            this.state.note.title,
-            this.state.note.body
+            this.state.note
           );
           if (this.mounted) {
             this.setState({
@@ -126,6 +132,11 @@ class Note extends Component {
           if (typeof(err.response) !== 'undefined'
             && err.response.status === 401) {
             this.context.logout();
+          }
+          if (this.mounted) {
+            this.setState({
+              saved: -1
+            });
           }
           console.log(err.response);
         }
@@ -143,6 +154,21 @@ class Note extends Component {
         && err.response.status === 401) {
         this.context.logout();
       }
+    }
+  };
+
+  switchSaveIndicator = () => {
+    switch (this.state.saved) {
+      case 0:
+        return <button className="btn btn-link" onClick={this.updateRemote}>Save</button>
+      case 1:
+        return <span>Saved</span>
+      case 2:
+        return <span>Saving...</span>
+      case -1:
+        return <span>Error</span>
+      default:
+        return <span>Error</span>
     }
   };
   
@@ -163,7 +189,9 @@ class Note extends Component {
           >
             <FontAwesomeIcon icon="trash-alt" />
           </button>
-          {this.state.saved}
+          <span className="save-indicator">
+            {this.switchSaveIndicator()}
+          </span>
         </Titlebar>
         <main className="app-main">
           <div className="note-editor">

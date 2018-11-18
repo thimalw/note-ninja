@@ -22,11 +22,8 @@ const list = async () => {
   return await instance.get('/notes');
 };
 
-const update = async (id, title, body) => {
-  return await instance.put(`/notes/${id}`, {
-    title,
-    body
-  });
+const update = async (id, note) => {
+  return await instance.put(`/notes/${id}`, note);
 };
 
 const remove = async (id) => {

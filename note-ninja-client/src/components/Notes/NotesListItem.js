@@ -10,12 +10,14 @@ class NotesListItem extends Component {
           to={`/notes/${note._id}`}
           className="notes-list-item"
         >
-          <div className="note-title">
-            {note.title}
-          </div>
-          <div className="note-body">
-            This is the excerpt from the note...
-          </div>
+          {note.title.trim() !== '' &&
+            <div className="note-title">
+              {note.title}
+            </div>
+          }
+          <pre className="note-body">
+            {note.excerpt}
+          </pre>
         </Link>
     );
   }
