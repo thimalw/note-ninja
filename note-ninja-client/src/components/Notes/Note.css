@@ -37,12 +37,7 @@
   align-items: center;
   justify-content: flex-start;
   flex-wrap: wrap;
-  opacity: 0.3;
   padding: 5px 0;
-  transition: opacity 150ms linear;
-}
-.note-editor .note-toolbar:hover .toolbar-row {
-  opacity: 1;
 }
 .note-editor .note-toolbar .btn {
   display: flex;
@@ -78,13 +73,16 @@
 }
 
 .note-editor .note-editor-wrap {
-  padding-bottom: 165px;
+  /* margin-bottom: 165px; */
   line-height: 1.7;
   font-size: 18px;
-  height: inherit;
-  min-height: calc(100vh - 297px);
+  /* height: inherit; */
+  height: calc(100vh - 297px);
   position: relative;
   cursor: text;
+}
+.note-editor .DraftEditor-root {
+  margin-bottom: 165px;
 }
 .note-editor .public-DraftEditorPlaceholder-root {
   pointer-events: none;
