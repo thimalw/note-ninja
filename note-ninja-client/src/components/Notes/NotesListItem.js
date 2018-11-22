@@ -15,9 +15,11 @@ class NotesListItem extends Component {
               {note.title}
             </div>
           }
-          <pre className="note-body">
-            {note.excerpt}
-          </pre>
+          <div
+            className="note-body"
+            dangerouslySetInnerHTML={{__html: note.excerpt}}
+          >
+          </div>
         </Link>
     );
   }

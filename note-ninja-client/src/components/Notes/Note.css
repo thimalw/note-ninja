@@ -72,24 +72,6 @@
   margin: 2px 4px;
 }
 
-.note-editor .note-editor-wrap {
-  /* margin-bottom: 165px; */
-  line-height: 1.7;
-  font-size: 18px;
-  /* height: inherit; */
-  height: calc(100vh - 297px);
-  position: relative;
-  cursor: text;
-}
-.note-editor .DraftEditor-root {
-  margin-bottom: 165px;
-}
-.note-editor .public-DraftEditorPlaceholder-root {
-  pointer-events: none;
-}
-.note-editor .note-editor-wrap.hide-placeholder .public-DraftEditorPlaceholder-root {
-  display: none;
-}
 .note-editor .note-title-outer {
   padding-top: 50px;
   padding-bottom: 30px;
@@ -104,4 +86,19 @@
   outline: none !important;
   flex: 0;
   padding-bottom: 20px;
+}
+.note-editor .note-body {
+  margin-bottom: 165px;
+  outline: none !important;
+  cursor: text;
+  line-height: 1.7;
+  font-size: 18px;
+  height: calc(100vh - 297px);
+  position: relative;
+  cursor: text;
+}
+.note-editor .note-body:empty:before{
+  content: attr(placeholder);
+  display: block;
+  color: #aaa;
 }

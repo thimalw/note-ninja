@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { Editor, EditorState, RichUtils, convertFromRaw, convertToRaw } from 'draft-js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import 'draft-js/dist/Draft.css';
+import ContentEditable from 'react-contenteditable';
+import EditorButton from './EditorButton';
 import NotesAPI from '../../api/notes.api';
 import Titlebar from '../Titlebar';
 import AuthContext from '../../contexts/AuthContext';
@@ -12,6 +12,8 @@ class Note extends Component {
   constructor(props) {
     super(props);
 
+    this.contentEditable = React.createRef();
+
     this.state = {
       note: {
         _id: this.props.match.params.id,
@@ -19,22 +21,24 @@ class Note extends Component {
         body: '',
         excerpt: ''
       },
-      saved: 1,
-      editorState: EditorState.createEmpty()
-    };
-
-    this.focus = () => this.refs.editor.focus();
-
-    this.onChange = (editorState) => {
-      const contentState = editorState.getCurrentContent();
-      this.handleContentChange(contentState);
-      this.setState({ editorState });
+      saved: 1
     };
   }
 
   async componentDidMount() {
-    this.timer = setInterval(() => this.updateRemote(), 3000);
     this.mounted = true;
+    this.timer = setInterval(() => {
+      this.setState({
+        saved: 2
+      }, () => {
+        const updated = this.updateRemote();
+        if (updated) {
+          this.setState({
+            saved: 1
+          });
+        }
+      });
+    }, 2500);
     
     try {
       const res = await NotesAPI.get(this.props.match.params.id);
@@ -43,15 +47,6 @@ class Note extends Component {
       this.setState({
         note
       });
-
-      if (note.body !== '') {
-        var editorState = null;
-        const contentState = convertFromRaw(JSON.parse(note.body));
-        editorState = EditorState.createWithContent(contentState);
-        this.setState({
-          editorState
-        });
-      }
     } catch (err) {
       if (typeof(err.response) !== 'undefined'
         && err.response.status === 401) {
@@ -62,103 +57,132 @@ class Note extends Component {
     }
   }
 
-  componentWillUnmount() {
+  async componentWillUnmount() {
     this.timer = null;
     this.mounted = false;
+    await this.updateRemote();
   }
-
-  handleKeyCommand = (command, editorState) => {
-    const newState = RichUtils.handleKeyCommand(editorState, command);
-    if (newState) {
-      this.onChange(newState);
-      return true;
-    } else {
-      return false;
-    }
-  };
-
-  onTab = (e) => {
-    e.preventDefault();
-    const newEditorState = RichUtils.onTab(
-      e,
-      this.state.editorState,
-      4, /* maxDepth */
-    );
-    if (newEditorState !== this.state.editorState) {
-      this.onChange(newEditorState);
-    }
-  };
-
-  handleBlockStyle = e => {
-    e.preventDefault();
-    this.onChange(RichUtils.toggleBlockType(this.state.editorState, e.target.value));
-  };
-
-  handleInlineStyle = e => {
-    e.preventDefault();
-    this.onChange(RichUtils.toggleInlineStyle(this.state.editorState, e.target.value));
-  };
-
-  handleContentChange = (contentState) => {
-    const plainText = contentState.getPlainText();
-    const excerpt = plainText.length > 100 ? plainText.substring(0, 97).trim() + "..." : plainText;
-    const contentStateRaw = convertToRaw(contentState);
-    this.setState(state => ({
-      note: {
-        ...state.note,
-        body: JSON.stringify(contentStateRaw),
-        excerpt
-      },
-      saved: 0
-    }), () => {
-      // this.updateRemote();
-    });
-  };
 
   handleTitleChange = e => {
     const title = e.target.value;
     this.setState(state => ({
       note: {
         ...state.note,
-        title: title,
+        title
       },
       saved: 0
-    }), () => {
-      // this.updateRemote();
-    });
+    }));
   };
-  
-  updateRemote = () => {
-    if (!this.state.saved && this.mounted) {
-      this.setState({
-        saved: 2
-      }, async () => {
-        try {
-          const res = await NotesAPI.update(
-            this.state.note._id,
-            this.state.note
-          );
-          if (this.mounted) {
-            this.setState({
-              saved: 1
-            });
-          }
-          console.log(res);
-        } catch (err) {
-          if (typeof(err.response) !== 'undefined'
-            && err.response.status === 401) {
-            this.context.logout();
-          }
-          if (this.mounted) {
-            this.setState({
-              saved: -1
-            });
-          }
-          console.log(err.response);
+
+  handleBodyChange = e => {
+    const body = e.target.value;
+    this.setState(state => ({
+      note: {
+        ...state.note,
+        body
+      },
+      saved: 0
+    }));
+  };
+
+  handleEditorButton = e => {
+    const control = e.target;
+    console.log(control.getAttribute('data-command'));
+  };
+
+  updateRemote = async () => {
+    if (this.state.saved) {
+      return true;
+    }
+
+    let excerpt;
+    if (this.state.note.body.length > 100) {
+      excerpt = this.state.note.body.substring(0, 97) + '...';
+    } else {
+      excerpt = this.state.note.body;
+    }
+
+    const _note = {
+      ...this.state.note,
+      excerpt
+    };
+
+    if (this.mounted) {
+      this.setState(state => ({
+        note: {
+          ...state.note,
+          excerpt
         }
-      });
+      }));
+    }
+
+    try {
+      await NotesAPI.update(
+        this.state.note._id,
+        _note
+      );
+      if (this.mounted) {
+        this.setState({
+          saved: 1
+        });
+      }
+    } catch (err) {
+      if (typeof (err.response) !== 'undefined'
+        && err.response.status === 401) {
+        this.context.logout();
+      }
+      if (this.mounted) {
+        this.setState({
+          saved: -1
+        });
+      }
+      console.log(err.response);
     }
   };
+  
+  // _updateRemote = async () => {
+  //   if (!this.state.saved) {
+  //     this.setState(state => {
+  //       let excerpt;
+  //       if (state.note.body.length > 100) {
+  //         excerpt = state.note.body.substring(0, 97) + '...';
+  //       } else {
+  //         excerpt = state.note.body;
+  //       }
+        
+  //       return {
+  //         note: {
+  //           ...state.note,
+  //           excerpt
+  //         },
+  //         saved: 2
+  //       };
+  //     }, async () => {
+  //       try {
+  //         await NotesAPI.update(
+  //           this.state.note._id,
+  //           this.state.note
+  //         );
+  //         if (this.mounted) {
+  //           this.setState({
+  //             saved: 1
+  //           });
+  //         }
+  //       } catch (err) {
+  //         if (typeof(err.response) !== 'undefined'
+  //           && err.response.status === 401) {
+  //           this.context.logout();
+  //         }
+  //         if (this.mounted) {
+  //           this.setState({
+  //             saved: -1
+  //           });
+  //         }
+  //         console.log(err.response);
+  //       }
+  //     });
+  //   }
+  // };
 
   handleNoteDelete = async () => {
     try {
@@ -182,21 +206,12 @@ class Note extends Component {
       case 2:
         return <span>Saving...</span>
       case -1:
-        return <span>Error</span>
       default:
         return <span>Error</span>
     }
   };
   
-  render() {
-    let className = 'note-editor-wrap';
-    var contentState = this.state.editorState.getCurrentContent();
-    if (!contentState.hasText()) {
-      if (contentState.getBlockMap().first().getType() !== 'unstyled') {
-        className += ' hide-placeholder';
-      }
-    }
-    
+  render() {    
     return (
       <div className="app-outer">
         <Titlebar>
@@ -230,56 +245,59 @@ class Note extends Component {
                   onChange={this.handleTitleChange}
                 />
               </div>
-              <div
-                className={className}
-                onClick={this.focus}
-              >
-                <Editor
+              <div>
+                {/* <div
                   className="note-body"
+                  contentEditable
                   placeholder="Type here..."
-                  editorState={this.state.editorState}
-                  handleKeyCommand={this.handleKeyCommand}
-                  onTab={this.onTab}
-                  onChange={this.onChange}
-                  ref="editor"
-                  spellCheck={true}
+                  onInput={this.handleBodyChange}
+                  dangerouslySetInnerHTML={{__html: this.state.note.body}}>
+                </div> */}
+                {/* <ContentEditable
+                  tagName="p"
+                  className="note-body"
+                  content={this.state.note.body}
+                  editable={true}
+                  multiLine={true}
+                  onChange={this.handleBodyChange}
+                /> */}
+                <ContentEditable
+                  className="note-body"
+                  innerRef={this.contentEditable}
+                  html={this.state.note.body}
+                  disabled={false}
+                  onChange={this.handleBodyChange}
+                  tagName="div"
+                  placeholder="Type here..."
                 />
               </div>
             </div>
             <div className="note-toolbar">
               <div className="container container-text note-toolbar-inner">
                 <div className="toolbar-row">
-                  <button
-                    className="btn toolbar-command"
-                    value="header-two"
-                    onMouseDown={this.handleBlockStyle}>
-                    <FontAwesomeIcon icon="heading" />
-                  </button>
-                  <button
-                    className="btn toolbar-command"
-                    value="paragraph"
-                    onMouseDown={this.handleBlockStyle}>
-                    <FontAwesomeIcon icon="paragraph" />
-                  </button>
+                  <EditorButton
+                    command="formatBlock"
+                    blockStyle="h2"
+                    icon="heading"
+                  />
+                  <EditorButton
+                    command="formatBlock"
+                    blockStyle="p"
+                    icon="paragraph"
+                  />
                   <div className="toolbar-sep"></div>
-                  <button
-                    className="btn toolbar-command"
-                    value="BOLD"
-                    onMouseDown={this.handleInlineStyle}>
-                    <FontAwesomeIcon icon="bold" />
-                  </button>
-                  <button
-                    className="btn toolbar-command"
-                    value="ITALIC"
-                    onMouseDown={this.handleInlineStyle}>
-                    <FontAwesomeIcon icon="italic" />
-                  </button>
-                  <button
-                    className="btn toolbar-command"
-                    value="UNDERLINE"
-                    onMouseDown={this.handleInlineStyle}>
-                    <FontAwesomeIcon icon="underline" />
-                  </button>
+                  <EditorButton
+                    command="bold"
+                    icon="bold"
+                  />
+                  <EditorButton
+                    command="italic"
+                    icon="italic"
+                  />
+                  <EditorButton
+                    command="underline"
+                    icon="underline"
+                  />
                   <div className="toolbar-sep"></div>
                   <button
                     className="btn toolbar-command"
