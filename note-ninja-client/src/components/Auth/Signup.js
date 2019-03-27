@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
+import CryptoJS from 'crypto-js';
 import Auth from './Auth';
 import AuthAPI from '../../api/auth.api';
 import AuthContext, { AuthConsumer } from '../../contexts/AuthContext';
@@ -33,13 +34,30 @@ class Signup extends Component {
   });
 
   onSubmit = async (values, actions) => {
+    let user = {
+      ...values
+    };
+
+    const password_p = user.password;
+    const password_h = CryptoJS.SHA256(password_p).toString();
+
+    const key_n = CryptoJS.lib.WordArray.random(16);
+    const salt = CryptoJS.lib.WordArray.random(8).toString();
+    const key_u = CryptoJS.PBKDF2(password_p, salt, { keySize: 256 / 32, iterations: 1000 });
+    const key_n_c = CryptoJS.AES.encrypt(key_n.toString(), key_u.toString()).toString();
+
+    user.password = password_h;
+    user.passwordConfirm = password_h;
+    user.key = key_n_c;
+    user.salt = salt;
+    
     try {
-      await AuthAPI.signup(values);
+      await AuthAPI.signup(user);
 
       try {
         await this.context.login(
-          values.email,
-          values.password
+          user.email,
+          user.password
         );
         this.props.history.push('/');
       } catch (err) {

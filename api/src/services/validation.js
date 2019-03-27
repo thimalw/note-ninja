@@ -1,16 +1,5 @@
 const Joi = require('joi');
 
-const userKeys = Joi.object().keys({
-  k0: Joi.string()
-    .length(64)
-    .required()
-    .label('Encryption data'),
-  salt: Joi.string()
-    .length(16)
-    .required()
-    .label('Encryption data')
-});
-
 const validUser = Joi.object().keys({
   email: Joi.string()
     .email({ minDomainAtoms: 2 })
@@ -36,7 +25,15 @@ const validUser = Joi.object().keys({
     .max(50)
     .required()
     .label("Name"),
-  keys: userKeys
+  key: Joi.string()
+    .min(64)
+    .required()
+    .label('Encryption key'),
+  salt: Joi.string()
+    .base64()
+    .length(16)
+    .required()
+    .label('Encryption key')
 });
 
 const validNote = Joi.object().keys({

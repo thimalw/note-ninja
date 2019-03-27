@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import ContentEditable from 'react-contenteditable';
+import CryptoJS from 'crypto-js';
 import EditorButton from './EditorButton';
 import NotesAPI from '../../api/notes.api';
 import Titlebar from '../Titlebar';
@@ -28,21 +29,21 @@ class Note extends Component {
   async componentDidMount() {
     this.mounted = true;
     this.timer = setInterval(() => {
-      this.setState({
-        saved: 2
-      }, () => {
-        const updated = this.updateRemote();
-        if (updated) {
-          this.setState({
-            saved: 1
-          });
-        }
-      });
-    }, 2500);
+      if (this.state.saved !== 1) {
+        this.setState({
+          saved: 2
+        }, () => {
+          this.updateRemote();
+        });
+      }
+    }, 8000);
     
     try {
       const res = await NotesAPI.get(this.props.match.params.id);
       const note = res.data.data.note;
+      note.title = await CryptoJS.AES.decrypt(note.title, this.context.key).toString(CryptoJS.enc.Utf8);
+      note.body = await CryptoJS.AES.decrypt(note.body, this.context.key).toString(CryptoJS.enc.Utf8);
+      note.excerpt = await CryptoJS.AES.decrypt(note.excerpt, this.context.key).toString(CryptoJS.enc.Utf8);
 
       this.setState({
         note
@@ -58,7 +59,7 @@ class Note extends Component {
   }
 
   async componentWillUnmount() {
-    this.timer = null;
+    clearInterval(this.timer);
     this.mounted = false;
     await this.updateRemote();
   }
@@ -91,10 +92,17 @@ class Note extends Component {
   };
 
   updateRemote = async () => {
-    if (this.state.saved) {
+    if (typeof(this.state.saved) === 'undefined' || this.state.saved === 1) {
+      if (this.mounted) {
+        this.setState({
+          saved: 1
+        })
+      }
+
       return true;
     }
 
+    // generate note excerpt
     let excerpt;
     if (this.state.note.body.length > 100) {
       excerpt = this.state.note.body.substring(0, 97) + '...';
@@ -102,25 +110,26 @@ class Note extends Component {
       excerpt = this.state.note.body;
     }
 
-    const _note = {
+    // encrypt note title, body and excerpt
+    const title_e = await CryptoJS.AES.encrypt(this.state.note.title, this.context.key).toString();
+    const body_e = await CryptoJS.AES.encrypt(this.state.note.body, this.context.key).toString();
+    const excerpt_e = await CryptoJS.AES.encrypt(excerpt, this.context.key).toString();
+
+    // create final note object for posting
+    const note_e = {
       ...this.state.note,
-      excerpt
+      title: title_e,
+      body: body_e,
+      excerpt: excerpt_e
     };
 
-    if (this.mounted) {
-      this.setState(state => ({
-        note: {
-          ...state.note,
-          excerpt
-        }
-      }));
-    }
-
+    // try and submit the encrypted note
     try {
       await NotesAPI.update(
         this.state.note._id,
-        _note
+        note_e
       );
+
       if (this.mounted) {
         this.setState({
           saved: 1
@@ -131,58 +140,16 @@ class Note extends Component {
         && err.response.status === 401) {
         this.context.logout();
       }
+
       if (this.mounted) {
         this.setState({
           saved: -1
         });
       }
+
       console.log(err.response);
     }
   };
-  
-  // _updateRemote = async () => {
-  //   if (!this.state.saved) {
-  //     this.setState(state => {
-  //       let excerpt;
-  //       if (state.note.body.length > 100) {
-  //         excerpt = state.note.body.substring(0, 97) + '...';
-  //       } else {
-  //         excerpt = state.note.body;
-  //       }
-        
-  //       return {
-  //         note: {
-  //           ...state.note,
-  //           excerpt
-  //         },
-  //         saved: 2
-  //       };
-  //     }, async () => {
-  //       try {
-  //         await NotesAPI.update(
-  //           this.state.note._id,
-  //           this.state.note
-  //         );
-  //         if (this.mounted) {
-  //           this.setState({
-  //             saved: 1
-  //           });
-  //         }
-  //       } catch (err) {
-  //         if (typeof(err.response) !== 'undefined'
-  //           && err.response.status === 401) {
-  //           this.context.logout();
-  //         }
-  //         if (this.mounted) {
-  //           this.setState({
-  //             saved: -1
-  //           });
-  //         }
-  //         console.log(err.response);
-  //       }
-  //     });
-  //   }
-  // };
 
   handleNoteDelete = async () => {
     try {
@@ -246,21 +213,6 @@ class Note extends Component {
                 />
               </div>
               <div>
-                {/* <div
-                  className="note-body"
-                  contentEditable
-                  placeholder="Type here..."
-                  onInput={this.handleBodyChange}
-                  dangerouslySetInnerHTML={{__html: this.state.note.body}}>
-                </div> */}
-                {/* <ContentEditable
-                  tagName="p"
-                  className="note-body"
-                  content={this.state.note.body}
-                  editable={true}
-                  multiLine={true}
-                  onChange={this.handleBodyChange}
-                /> */}
                 <ContentEditable
                   className="note-body"
                   innerRef={this.contentEditable}

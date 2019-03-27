@@ -3,21 +3,27 @@ import { Link } from 'react-router-dom';
 import './NotesListItem.css';
 
 class NotesListItem extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      note: this.props.note
+    }
+  }
+
   render() {
-    const note = this.props.note;
     return (
         <Link
-          to={`/notes/${note._id}`}
+          to={`/notes/${this.state.note._id}`}
           className="notes-list-item"
         >
-          {note.title.trim() !== '' &&
+          {this.state.note.title.trim() !== '' &&
             <div className="note-title">
-              {note.title}
+          {this.state.note.title}
             </div>
           }
           <div
             className="note-body"
-            dangerouslySetInnerHTML={{__html: note.excerpt}}
+            dangerouslySetInnerHTML={{ __html: this.state.note.excerpt}}
           >
           </div>
         </Link>

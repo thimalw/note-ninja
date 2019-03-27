@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
+import CryptoJS from 'crypto-js';
 import Auth from './Auth';
 import AuthContext, { AuthConsumer } from '../../contexts/AuthContext';
 import { Redirect, Link } from 'react-router-dom';
@@ -23,11 +24,19 @@ class Login extends Component {
   });
 
   onSubmit = async (values, actions) => {
+    let user = {
+      ...values
+    };
+
+    const password_p = user.password;
+    user.password = CryptoJS.SHA256(password_p).toString();
+    
     try {
       await this.context.login(
-        values.email,
-        values.password
+        user.email,
+        user.password
       );
+      
       this.props.history.push('/');
     } catch (err) {
       if (typeof(err.response) !== 'undefined') {
@@ -45,7 +54,6 @@ class Login extends Component {
       }
     }
     
-    console.log(values);
     actions.setSubmitting(false);
   }
   

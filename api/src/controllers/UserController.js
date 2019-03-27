@@ -68,7 +68,7 @@ const authenticate = async ({email, password}) => {
       expiresIn: 86400 // 24 hours
     };
 
-    const token = jwt.sign({ id: userInfo._id }, secret, opts);
+    const token = jwt.sign({ id: userInfo._id, key: userInfo.key, salt: userInfo.salt }, secret, opts);
 
     return makeRes(200, 'Authentication successful.', { token });
   }
