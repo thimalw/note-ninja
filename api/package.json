@@ -1,0 +1,33 @@
+{
+  "name": "note-ninja-api",
+  "version": "0.0.1",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/syndicatelk/note-ninja.git"
+  },
+  "author": "Thimal Wickremage",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/syndicatelk/note-ninja/issues"
+  },
+  "homepage": "https://gitlab.com/syndicatelk/note-ninja#readme",
+  "dependencies": {
+    "bcrypt": "^3.0.0",
+    "body-parser": "^1.18.3",
+    "cors": "^2.8.5",
+    "express": "^4.16.4",
+    "joi": "^13.7.0",
+    "jsonwebtoken": "^8.3.0",
+    "mongoose": "^5.3.11",
+    "nodemon": "^1.18.6",
+    "passport": "^0.4.0",
+    "passport-jwt": "^4.0.0",
+    "winston": "^3.1.0"
+  }
+}

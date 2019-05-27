@@ -1,0 +1,104 @@
+.note-editor {
+  min-height: calc(100vh - 50px);
+  top: 0;
+}
+.note-editor-inner {
+  min-height: calc(100vh - 102px);
+}
+
+.save-indicator {
+  display: inline-block;
+  margin: 0 5px;
+  line-height: 1;
+  font-size: 14px;
+  color: #888;
+  text-transform: uppercase;
+}
+
+.note-editor .note-toolbar {
+  position: fixed;
+  display: block;
+  top: auto;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 0 20px;
+  border-top: 1px solid #eee;
+  background-color: #fff;
+  z-index: 900;
+}
+.note-editor .note-toolbar-inner {
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+}
+.note-editor .note-toolbar .toolbar-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  padding: 5px 0;
+}
+.note-editor .note-toolbar .btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  background-color: transparent;
+  border: 1px solid rgba(0,0,0,0);
+  border-radius: 8px;
+  padding: 5px;
+  margin: 2px;
+  height: 34px;
+  min-width: 34px;
+  flex-grow: 0;
+  flex-shrink: 0;
+  font-size: 14px;
+  line-height: 1;
+  text-decoration: none;
+  transition: border 150ms linear, box-shadow 250ms linear;
+  outline: none !important;
+}
+.note-editor .note-toolbar .btn:hover {
+  border: 1px solid rgba(0,0,0,0.1);
+  box-shadow: 0 10px 10px -6px rgba(0,0,0,0.1);
+  cursor: pointer;
+}
+.note-editor .note-toolbar .toolbar-sep {
+  display: block;
+  height: 34px;
+  width: 1px;
+  background-color: rgba(0,0,0,0.05);
+  margin: 2px 4px;
+}
+
+.note-editor .note-title-outer {
+  padding-top: 50px;
+  padding-bottom: 30px;
+}
+.note-editor .note-title {
+  display: block;
+  width: 100%;
+  padding: 15px 0;
+  font-size: 38px;
+  border: 0;
+  margin: 0;
+  outline: none !important;
+  flex: 0;
+  padding-bottom: 20px;
+}
+.note-editor .note-body {
+  margin-bottom: 165px;
+  outline: none !important;
+  cursor: text;
+  line-height: 1.7;
+  font-size: 18px;
+  height: calc(100vh - 297px);
+  position: relative;
+  cursor: text;
+}
+.note-editor .note-body:empty:before{
+  content: attr(placeholder);
+  display: block;
+  color: #aaa;
+}
