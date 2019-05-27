@@ -49,7 +49,6 @@ const validNote = Joi.object().keys({
     .label("Body text"),
   excerpt: Joi.string()
     .allow('')
-    .max(100)
     .label("Excerpt"),
   createdAt: Joi.any(),
   updatedAt: Joi.any(),

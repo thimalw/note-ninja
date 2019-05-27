@@ -8,9 +8,9 @@ const { makeRes, to } = require('../helpers');
 const create = async (user, note) => {
   note.user = user;
 
-  if (typeof (note.excerpt) != 'undefined') {
-    note.excerpt = note.excerpt.substring(0, 100);
-  }
+  // if (typeof (note.excerpt) != 'undefined') {
+  //   note.excerpt = note.excerpt.substring(0, 100);
+  // }
 
   const validatedNote = Joi.validate(note, validNote, {
     allowUnknown: false,
@@ -69,9 +69,9 @@ const update = async (id, user, note) => {
   delete note._id;
   note.user = user;
 
-  if (typeof(note.excerpt) != 'undefined') {
-    note.excerpt = note.excerpt.substring(0, 100);
-  }
+  // if (typeof(note.excerpt) != 'undefined') {
+  //   note.excerpt = note.excerpt.substring(0, 100);
+  // }
 
   const validatedNote = Joi.validate(note, validNote, {
     allowUnknown: false,
