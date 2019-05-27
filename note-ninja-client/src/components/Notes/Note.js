@@ -206,6 +206,7 @@ class Note extends Component {
                   type="text"
                   name="title"
                   placeholder="Title"
+                  autoComplete="off"
                   value={this.state.note.title}
                   onChange={this.handleTitleChange}
                 />
