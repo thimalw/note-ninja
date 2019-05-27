@@ -17,6 +17,14 @@ const UserSchema = new Schema({
     type: String,
     required: true,
     trim: true
+  },
+  key: {
+    type: String,
+    required: true
+  },
+  salt: {
+    type: String,
+    required: true
   }
 }, { timestamps: true });
 

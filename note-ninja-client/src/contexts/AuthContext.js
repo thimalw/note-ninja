@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import CryptoJS from 'crypto-js';
 import AuthAPI from '../api/auth.api';
 
 const AuthContext = React.createContext();
@@ -8,43 +9,67 @@ class AuthProvider extends Component {
   constructor(props) {
     super(props);
 
-    const isLoggedIn = localStorage.getItem('jwtToken') === null ? false : true;
-
     this.state = {
-      isLoggedIn
+      isLoggedIn: false,
+      key: null
     };
   }
 
   componentDidMount() {
-    const isLoggedIn = localStorage.getItem('jwtToken') === null ? false : true;
-    this.setState({
-      isLoggedIn
-    });
+    if (localStorage.getItem('token') === null || localStorage.getItem('key') === null) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('key');
+      this.setState({
+        isLoggedIn: false
+      });
+    } else {
+      this.setState({
+        isLoggedIn: true,
+        key: localStorage.getItem('key')
+      });
+    }    
   }
 
   login = async (email, password) => {
     try {
-      const resp = await AuthAPI.login(email, password);
+      const password_p = password;
+      password = await CryptoJS.SHA256(password).toString();
+      console.log(`Sending password: ${password}`); // TODO
+      const res = await AuthAPI.login(email, password);
+      const token = res.data.data.token;
+      var base64Url = token.split('.')[1];
+      var base64 = base64Url.replace('-', '+').replace('_', '/');
+      const _token = JSON.parse(window.atob(base64));
 
-      localStorage.setItem('jwtToken', resp.data.data.token);
+      const key_u = await CryptoJS.PBKDF2(password_p, _token.salt, { keySize: 256 / 32, iterations: 1000 });
+      console.log(`KEY: ${key_u.toString()} - Password: ${password_p} - Salt: ${_token.salt}`); //TODO
+      const key = await CryptoJS.AES.decrypt(_token.key, key_u.toString()).toString(CryptoJS.enc.Utf8);
+
+      localStorage.setItem('token', token);
+      localStorage.setItem('key', key);
       this.setState({
-        isLoggedIn: true
+        isLoggedIn: true,
+        key: key
       });
 
-      return resp;
+      return res;
 
     } catch (err) {
-      localStorage.removeItem('jwtToken');
+      localStorage.removeItem('token');
+      localStorage.removeItem('key');
       this.setState({
         isLoggedIn: false
       });
+
+      console.log(err); // TODO
 
       throw err;
     }
   };
 
   logout = () => {
-    localStorage.removeItem('jwtToken');
+    localStorage.removeItem('token');
+    localStorage.removeItem('key');
     this.setState({
       isLoggedIn: false
     });
@@ -55,6 +80,7 @@ class AuthProvider extends Component {
       <AuthContext.Provider
         value={{
           isLoggedIn: this.state.isLoggedIn,
+          key: this.state.key,
           login: this.login,
           logout: this.logout
         }}

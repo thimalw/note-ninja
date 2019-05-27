@@ -4,7 +4,7 @@ import './apiConfig';
 const instance = axios.create();
 instance.interceptors.request.use(
   config => {
-    config.headers.authorization = `bearer ${localStorage.getItem("jwtToken")}`;
+    config.headers.authorization = `bearer ${localStorage.getItem("token")}`;
     return config;
   },
   error => Promise.reject(error)
