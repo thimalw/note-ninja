@@ -22,6 +22,7 @@ class Note extends Component {
         body: '',
         excerpt: ''
       },
+      plainText: '',
       saved: 1
     };
   }
@@ -77,18 +78,15 @@ class Note extends Component {
 
   handleBodyChange = e => {
     const body = e.target.value;
+    const plainText = (new DOMParser()).parseFromString(body, "text/html").documentElement.textContent;
     this.setState(state => ({
       note: {
         ...state.note,
         body
       },
+      plainText,
       saved: 0
     }));
-  };
-
-  handleEditorButton = e => {
-    const control = e.target;
-    console.log(control.getAttribute('data-command'));
   };
 
   updateRemote = async () => {
@@ -104,10 +102,10 @@ class Note extends Component {
 
     // generate note excerpt
     let excerpt;
-    if (this.state.note.body.length > 100) {
-      excerpt = this.state.note.body.substring(0, 97) + '...';
+    if (this.state.plainText.length > 100) {
+      excerpt = this.state.plainText.substring(0, 97) + '...';
     } else {
-      excerpt = this.state.note.body;
+      excerpt = this.state.plainText;
     }
 
     // encrypt note title, body and excerpt
@@ -147,7 +145,7 @@ class Note extends Component {
         });
       }
 
-      console.log(err.response);
+      console.log(err.response); // TODO
     }
   };
 
@@ -156,7 +154,7 @@ class Note extends Component {
       await NotesAPI.remove(this.state.note._id);
       this.props.history.push('/');
     } catch (err) {
-      console.log(err);
+      console.log(err); // TODO
       if (typeof(err.response) !== 'undefined'
         && err.response.status === 401) {
         this.context.logout();

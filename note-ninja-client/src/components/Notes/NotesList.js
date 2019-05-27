@@ -26,6 +26,7 @@ class NotesList extends Component {
       const res = await NotesAPI.list();
       const notes = res.data.data.notes;
       await notes.map(async note => {
+        console.log(note.excerpt);
         note.title = await CryptoJS.AES.decrypt(note.title, this.context.key).toString(CryptoJS.enc.Utf8);
         note.excerpt = await CryptoJS.AES.decrypt(note.excerpt, this.context.key).toString(CryptoJS.enc.Utf8);
 
@@ -38,7 +39,7 @@ class NotesList extends Component {
         && err.response.status === 401) {
         this.context.logout();
       }
-      console.log(err.response);
+      console.log(err); // TODO
     }
   };
   
