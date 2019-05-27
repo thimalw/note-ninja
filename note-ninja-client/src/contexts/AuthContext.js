@@ -32,19 +32,24 @@ class AuthProvider extends Component {
 
   login = async (email, password) => {
     try {
+      const password_p = password;
+      password = await CryptoJS.SHA256(password).toString();
+      console.log(`Sending password: ${password}`); // TODO
       const res = await AuthAPI.login(email, password);
       const token = res.data.data.token;
       var base64Url = token.split('.')[1];
       var base64 = base64Url.replace('-', '+').replace('_', '/');
       const _token = JSON.parse(window.atob(base64));
 
-      const key_u = CryptoJS.PBKDF2(password, _token.salt, { keySize: 256 / 32, iterations: 1000 });
-      const key = CryptoJS.AES.decrypt(_token.key, key_u.toString()).toString(CryptoJS.enc.Utf8);
+      const key_u = await CryptoJS.PBKDF2(password_p, _token.salt, { keySize: 256 / 32, iterations: 1000 });
+      console.log(`KEY: ${key_u.toString()} - Password: ${password_p} - Salt: ${_token.salt}`); //TODO
+      const key = await CryptoJS.AES.decrypt(_token.key, key_u.toString()).toString(CryptoJS.enc.Utf8);
 
       localStorage.setItem('token', token);
       localStorage.setItem('key', key);
       this.setState({
-        isLoggedIn: true
+        isLoggedIn: true,
+        key: key
       });
 
       return res;
@@ -55,6 +60,8 @@ class AuthProvider extends Component {
       this.setState({
         isLoggedIn: false
       });
+
+      console.log(err); // TODO
 
       throw err;
     }

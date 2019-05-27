@@ -44,6 +44,7 @@ class Signup extends Component {
     const key_n = CryptoJS.lib.WordArray.random(16);
     const salt = CryptoJS.lib.WordArray.random(8).toString();
     const key_u = CryptoJS.PBKDF2(password_p, salt, { keySize: 256 / 32, iterations: 1000 });
+    console.log(`KEY: ${key_u.toString()} - Password: ${password_p} - Salt: ${salt}`); //TODO
     const key_n_c = CryptoJS.AES.encrypt(key_n.toString(), key_u.toString()).toString();
 
     user.password = password_h;
@@ -57,7 +58,7 @@ class Signup extends Component {
       try {
         await this.context.login(
           user.email,
-          user.password
+          password_p
         );
         this.props.history.push('/');
       } catch (err) {
