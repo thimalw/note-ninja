@@ -206,6 +206,7 @@ class Note extends Component {
                   type="text"
                   name="title"
                   placeholder="Title"
+                  autoComplete="off"
                   value={this.state.note.title}
                   onChange={this.handleTitleChange}
                 />
@@ -249,18 +250,14 @@ class Note extends Component {
                     icon="underline"
                   />
                   <div className="toolbar-sep"></div>
-                  <button
-                    className="btn toolbar-command"
-                    value="unordered-list-item"
-                    onMouseDown={this.handleBlockStyle}>
-                    <FontAwesomeIcon icon="list-ul" />
-                  </button>
-                  <button
-                    className="btn toolbar-command"
-                    value="ordered-list-item"
-                    onMouseDown={this.handleBlockStyle}>
-                    <FontAwesomeIcon icon="list-ol" />
-                  </button>
+                  <EditorButton
+                    command="insertUnorderedList"
+                    icon="list-ul"
+                  />
+                  <EditorButton
+                    command="insertOrderedList"
+                    icon="list-ol"
+                  />
                 </div>
               </div>
             </div>
