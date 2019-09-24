@@ -31,6 +31,10 @@
   margin-bottom: 20px;
   transition: all 200ms linear;
 }
+.notes-list-item .note-title.note-title-empty {
+  color: #aaa;
+  margin-bottom: 0;
+}
 .notes-list-item:hover .note-title,
 .notes-list-item:active .note-title {
   color: #00b3fb;
@@ -46,4 +50,15 @@
   line-height: 1.25;
   overflow: hidden;
   max-height: 84px;
+}
+
+@media(max-width: 768px) {
+  .notes-list-item,
+  .notes-list-item:visited,
+  .notes-list-item:hover,
+  .notes-list-item:active {
+    display: block !important;
+    width: auto !important;
+    height: auto !important;
+  }
 }

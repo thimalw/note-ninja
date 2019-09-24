@@ -18,12 +18,17 @@ class NotesListItem extends Component {
         >
           {this.state.note.title.trim() !== '' &&
             <div className="note-title">
-          {this.state.note.title}
+              {this.state.note.title}
+            </div>
+          }
+          {this.state.note.title.trim() == '' && this.state.note.excerpt.trim() == '' &&
+            <div className="note-title note-title-empty">
+              Untitled
             </div>
           }
           <div
             className="note-body"
-            dangerouslySetInnerHTML={{ __html: this.state.note.excerpt}}
+            dangerouslySetInnerHTML={{ __html: this.state.note.excerpt }}
           >
           </div>
         </Link>
