@@ -81,7 +81,7 @@ class NotesList extends Component {
               <img src={typewriterImg} alt="" />
               <p className="notes-list-empty-message">Looks like you don't have any notes yet. Why not create one now?</p>
               <button
-                className="btn btn-primary btn-icon-left"
+                className="btn btn-primary btn-large btn-icon-left"
                 onClick={this.handleNoteCreate}
               >
                 <FontAwesomeIcon icon="plus" />
