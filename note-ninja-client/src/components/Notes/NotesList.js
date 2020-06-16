@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import CryptoJS from 'crypto-js';
 import Titlebar from '../Titlebar';
 import NotesAPI from '../../api/notes.api';
 import NotesListItem from './NotesListItem';
 import AuthContext from '../../contexts/AuthContext';
+import typewriterImg from '../../assets/img/typewriter.svg';
 import './NotesList.css';
 
 class NotesList extends Component {
@@ -41,19 +43,52 @@ class NotesList extends Component {
       console.log(err); // TODO
     }
   };
+
+  handleNoteCreate = async () => {
+    try {
+      const res = await NotesAPI.add({
+        title: '',
+        body: ''
+      });
+      const note = res.data.data.note;
+      this.props.history.push(`/notes/${note._id}`);
+    } catch (err) {
+      console.log(err);
+      if (typeof (err.response) !== 'undefined'
+        && err.response.status === 401) {
+        this.context.logout();
+      }
+    }
+  };
   
   render() {
     return (
       <div className="app-outer">
         <Titlebar />
         <main className="app-main">
-          <div className="notes-list">
-            {this.state.notes.map(note =>
-              <NotesListItem
-                key={note._id}
-                note={note} />
-            )}
-          </div>
+          {this.state.notes.length > 0 &&
+            <div className="notes-list">
+              {this.state.notes.map(note =>
+                <NotesListItem
+                  key={note._id}
+                  note={note} />
+              )}
+            </div>
+          }
+
+          {this.state.notes.length <= 0 &&
+            <div className="notes-list-empty">
+              <img src={typewriterImg} alt="" />
+              <p className="notes-list-empty-message">Looks like you don't have any notes yet. Why not create one now?</p>
+              <button
+                className="btn btn-primary btn-icon-left"
+                onClick={this.handleNoteCreate}
+              >
+                <FontAwesomeIcon icon="plus" />
+                New Note
+              </button>
+            </div>
+          }
         </main>
       </div>
     );

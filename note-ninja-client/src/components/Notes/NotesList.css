@@ -2,3 +2,27 @@
   padding: 10px;
   position: relative;
 }
+
+.notes-list-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 100px 0;
+}
+
+.notes-list-empty img {
+  display: block;
+  width: 500px;
+  height: auto;
+  max-width: calc(100% - 32px);
+  max-height: 50vh;
+}
+
+.notes-list-empty-message {
+  display: block;
+  margin: 64px 0;
+  font-size: 1.5rem;
+  color: #444;
+}
