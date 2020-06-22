@@ -5,7 +5,7 @@ import Titlebar from '../Titlebar';
 import NotesAPI from '../../api/notes.api';
 import NotesListItem from './NotesListItem';
 import AuthContext from '../../contexts/AuthContext';
-import typewriterImg from '../../assets/img/typewriter.svg';
+import typewriterImg from '../../assets/img/typewriter_white_paper.svg';
 import './NotesList.css';
 
 class NotesList extends Component {
@@ -63,11 +63,17 @@ class NotesList extends Component {
   
   render() {
     return (
-      <div className="app-outer">
+      <div className="app-outer app-outer--shaded">
         <Titlebar />
         <main className="app-main">
           {this.state.notes.length > 0 &&
             <div className="notes-list">
+              <button
+                className="notes-list-item-new"
+                onClick={this.handleNoteCreate}
+              >
+                <FontAwesomeIcon icon="plus" />
+              </button>
               {this.state.notes.map(note =>
                 <NotesListItem
                   key={note._id}

@@ -35,7 +35,7 @@ const create = async (user, note) => {
 
 const list = async (user) => {
   let err, notes;
-  [err, notes] = await to(Note.find({ user }, '_id title excerpt createdAt'));
+  [err, notes] = await to(Note.find({ user }, '_id title excerpt createdAt').sort({updatedAt: -1}));
 
   if (err) {
     logger.error(err);

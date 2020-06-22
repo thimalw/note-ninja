@@ -6,6 +6,9 @@
   top: 0;
   left: 0;
 }
+.app-outer--shaded {
+  background-color: #f9f9f9;
+}
 .app-main {
   min-height: calc(100vh - 50px);
 }
