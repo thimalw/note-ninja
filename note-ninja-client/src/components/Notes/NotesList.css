@@ -1,6 +1,9 @@
 .notes-list {
   padding: 10px;
   position: relative;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 .notes-list-empty {
@@ -25,4 +28,44 @@
   margin: 64px 0;
   font-size: 1.5rem;
   color: #444;
+}
+
+.notes-list-item-new {
+  display: inline-flex;
+  line-height: 1;
+  align-items: center;
+  justify-content: center;
+  background-color: #eee;
+  border: 1px solid #DBDBDB;
+  padding: 20px;
+  margin: 10px;
+  border-radius: 15px;
+  width: 260px;
+  height: 180px;
+  overflow: hidden;
+  position: relative;
+  color: #c0c0c0;
+  font-size: 32px;
+  text-decoration: none;
+  outline: none !important;
+  box-shadow: 0 9px 14px -9px rgba(0,0,0,0);
+  transition: all 200ms linear;
+  cursor: pointer;
+}
+
+.notes-list-item-new:hover,
+.notes-list-item-new:active {
+  border-color: #00b3fb;
+  color: #00b3fb;
+  box-shadow: 0 18px 28px -18px rgba(0,0,0,0.2);
+  transform: scale(1.02) translateY(-3px);
+  transition: all 100ms linear;
+}
+
+@media(max-width: 768px) {
+  .notes-list-item-new {
+    display: block !important;
+    width: auto !important;
+    height: auto !important;
+  }
 }
