@@ -6,7 +6,8 @@ const cors = require('cors');
 const app = express();
 
 // TODO: get mongodb URL from config/env
-mongoose.connect('mongodb://localhost:27017/noteninja', { useNewUrlParser: true }, (err) => {
+// mongoose.connect('mongodb://localhost:27017/noteninja', { useNewUrlParser: true }, (err) => {
+mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://localhost:27017/noteninja', { useNewUrlParser: true }, (err) => {
   app.use(cors());
   app.use(bodyParser.urlencoded({ extended: false }));
   app.use(bodyParser.json());
