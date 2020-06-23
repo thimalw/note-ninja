@@ -143,3 +143,34 @@
   display: block;
   color: #aaa;
 }
+
+.note-editor.note-loading .note-body,
+.note-editor.note-loading .note-body::before,
+.note-editor.note-loading .note-body::after {
+  content: "";
+  display: block;
+  position: relative;
+  height: 20px !important;
+  min-height: unset;
+  padding: 0 !important;
+  margin: 0 0 10px 0;
+  width: 100%;
+  border-radius: 6px;
+  animation-duration: 3s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: infinite;
+  animation-name: loadingShimmer;
+  animation-timing-function: linear;
+  background: #ecf2f7;
+  background: linear-gradient(to right, #f7fbfd 25%, #ecf2f7 50%, #f7fbfd 75%);
+}
+
+.note-editor.note-loading .note-body::before,
+.note-editor.note-loading .note-body::after {
+  top: 30px;
+  width: 75%;
+}
+
+.note-editor.note-loading .note-body::after {
+  width: 85%;
+}
