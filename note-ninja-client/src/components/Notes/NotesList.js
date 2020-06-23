@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import CryptoJS from 'crypto-js';
 import Titlebar from '../Titlebar';
+import Loader from '../Loader';
 import NotesAPI from '../../api/notes.api';
 import NotesListItem from './NotesListItem';
 import AuthContext from '../../contexts/AuthContext';
@@ -12,14 +13,16 @@ class NotesList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      notes: []
+      notes: [],
+      notesLoaded: false
     };
   }
 
   async componentDidMount() {
     const notes = await this.loadNotes();
     this.setState({
-      notes
+      notes,
+      notesLoaded: true
     });
   }
 
@@ -66,7 +69,13 @@ class NotesList extends Component {
       <div className="app-outer app-outer--shaded">
         <Titlebar />
         <main className="app-main">
-          {this.state.notes.length > 0 &&
+          {!this.state.notesLoaded &&
+            <div className="notes-loading">
+              <Loader />
+            </div>
+          }
+          
+          {this.state.notesLoaded && this.state.notes.length > 0 &&
             <div className="notes-list">
               <button
                 className="notes-list-item-new"
@@ -82,7 +91,7 @@ class NotesList extends Component {
             </div>
           }
 
-          {this.state.notes.length <= 0 &&
+          {this.state.notesLoaded && this.state.notes.length <= 0 &&
             <div className="notes-list-empty">
               <img src={typewriterImg} alt="" />
               <p className="notes-list-empty-message">Looks like you don't have any notes yet. Why not create one now?</p>
