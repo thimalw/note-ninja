@@ -22,6 +22,7 @@ class Note extends Component {
         body: '',
         excerpt: ''
       },
+      noteLoaded: false,
       plainText: '',
       saved: 1
     };
@@ -47,7 +48,8 @@ class Note extends Component {
       note.excerpt = await CryptoJS.AES.decrypt(note.excerpt, this.context.key).toString(CryptoJS.enc.Utf8);
 
       this.setState({
-        note
+        note,
+        noteLoaded: true
       });
     } catch (err) {
       if (typeof(err.response) !== 'undefined'
@@ -198,7 +200,7 @@ class Note extends Component {
           </span>
         </Titlebar>
         <main className="app-main">
-          <div className="note-editor">
+          <div className={'note-editor ' + (this.state.noteLoaded ? 'note-loaded' : 'note-loading')}>
             <div className="container container-text note-editor-inner">
               <div className="note-title-outer RichEditor-root">
                 <input

@@ -1,3 +1,12 @@
+@keyframes loadingShimmer {
+  0% {
+    background-position: 0px 0;
+  }
+  100% {
+    background-position: 100em 0;
+  }
+}
+
 .note-editor {
   min-height: calc(100vh - 50px);
   top: 0;
@@ -79,8 +88,9 @@
 }
 
 .note-editor .note-title-outer {
-  padding-top: 50px;
-  padding-bottom: 30px;
+  position: relative;
+  margin-top: 50px;
+  margin-bottom: 30px;
 }
 
 .note-editor .note-title {
@@ -92,6 +102,29 @@
   border: 0;
   outline: none !important;
   flex: 0;
+}
+
+.note-editor.note-loading .note-title {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.note-editor.note-loading .note-title-outer::after {
+  position: absolute;
+  top: 0;
+  left: 0;
+  content: "";
+  display: block;
+  width: 100%;
+  height: 50px;
+  border-radius: 6px;
+  animation-duration: 3s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: infinite;
+  animation-name: loadingShimmer;
+  animation-timing-function: linear;
+  background: #ecf2f7;
+  background: linear-gradient(to right, #f7fbfd 25%, #ecf2f7 50%, #f7fbfd 75%);
 }
 
 .note-editor .note-body {
