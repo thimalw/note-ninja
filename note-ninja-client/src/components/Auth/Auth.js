@@ -15,7 +15,7 @@ class Auth extends Component {
             {this.props.children}
             <footer className="auth-footer">
               <div className="app-copyright">
-                &copy; <a href="https://syndicate.lk" target="_blank" rel="noopener noreferrer">Syndicate</a>
+                &copy; <a href="https://thimal.me" target="_blank" rel="noopener noreferrer">Thimal Wickremage</a>
               </div>
             </footer>
           </div>
